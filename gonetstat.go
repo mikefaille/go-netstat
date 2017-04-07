@@ -44,7 +44,7 @@ const (
 	UNKNOWN
 )
 
-var ConnStatus = []string{
+var ConnStatus = [...]string{
 	ESTABLISHED: "ESTABLISHED",
 	SYN_SENT:    "SYN_SENT",
 	FIN_WAIT1:   "FIN_WAIT1",
@@ -92,44 +92,48 @@ func GetOutputv2() ([]netstat, error) {
 			pid := ""
 			programName := ""
 
-			switch {
-			case splitted[6] == "-":
-				pid = "-"
-				programName = "-"
-				break
-			case strings.Contains(splitted[6], "/"):
-				pidNProgramName := strings.SplitN(splitted[6], "/", 1)
-				pid = pidNProgramName[0]
-				programName = pidNProgramName[0]
-				break
-			default:
+			if len(splitted) < 6 {
+				log.Println("GetOutputv2 Error: ", splitted)
+			} else {
+				switch {
+				case splitted[6] == "-":
+					pid = "-"
+					programName = "-"
+					break
+				case strings.Contains(splitted[6], "/"):
+					pidNProgramName := strings.SplitN(splitted[6], "/", 1)
+					pid = pidNProgramName[0]
+					programName = pidNProgramName[0]
+					break
+				default:
 
-				break
+					break
+				}
+
+				localAddr, err := parseStrAddr(splitted[3])
+				if err != nil {
+					log.Fatalln("Netstat. Can't parse source address: "+splitted[3], err)
+
+				}
+
+				ForeignAddr, err := parseStrAddr(splitted[4])
+				if err != nil {
+					log.Fatalln("Netstat. Can't parse destination address: "+splitted[3], err)
+				}
+
+				netstatStruct := netstat{
+					Proto:          splitted[0],
+					RecvQ:          splitted[1],
+					SendQ:          splitted[2],
+					LocalAddress:   localAddr,
+					ForeignAddress: ForeignAddr,
+					State:          splitted[5],
+					Pid:            pid,
+					ProgramName:    programName,
+				}
+
+				linesOutput = append(linesOutput, netstatStruct)
 			}
-
-			localAddr, err := parseStrAddr(splitted[3])
-			if err != nil {
-				log.Fatalln("Netstat. Can't parse source address: "+splitted[3], err)
-
-			}
-
-			ForeignAddr, err := parseStrAddr(splitted[4])
-			if err != nil {
-				log.Fatalln("Netstat. Can't parse destination address: "+splitted[3], err)
-			}
-
-			netstatStruct := netstat{
-				Proto:          splitted[0],
-				RecvQ:          splitted[1],
-				SendQ:          splitted[2],
-				LocalAddress:   localAddr,
-				ForeignAddress: ForeignAddr,
-				State:          splitted[5],
-				Pid:            pid,
-				ProgramName:    programName,
-			}
-
-			linesOutput = append(linesOutput, netstatStruct)
 
 		}
 
