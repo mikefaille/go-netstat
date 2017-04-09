@@ -92,21 +92,6 @@ func GetOutputv2() ([]netstat, error) {
 			pid := ""
 			programName := ""
 
-			switch {
-			case splitted[6] == "-":
-				pid = "-"
-				programName = "-"
-				break
-			case strings.Contains(splitted[6], "/"):
-				pidNProgramName := strings.SplitN(splitted[6], "/", 1)
-				pid = pidNProgramName[0]
-				programName = pidNProgramName[0]
-				break
-			default:
-
-				break
-			}
-
 			localAddr, err := parseStrAddr(splitted[3])
 			if err != nil {
 				log.Fatalln("Netstat. Can't parse source address: "+splitted[3], err)
@@ -116,6 +101,21 @@ func GetOutputv2() ([]netstat, error) {
 			ForeignAddr, err := parseStrAddr(splitted[4])
 			if err != nil {
 				log.Fatalln("Netstat. Can't parse destination address: "+splitted[3], err)
+			}
+
+			switch {
+			case splitted[6] == "-":
+				pid = "-"
+				programName = "-"
+				break
+			case strings.Contains(splitted[6], "/"):
+				pidNProgramName := strings.SplitN(splitted[6], "/", 1)
+				pid = pidNProgramName[0]
+				programName = pidNProgramName[1]
+				break
+			default:
+
+				break
 			}
 
 			netstatStruct := netstat{
