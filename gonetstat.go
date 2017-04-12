@@ -112,7 +112,7 @@ func GetOutputv2() ([]netstat, error) {
 					programName = "-"
 					break
 				case strings.Contains(splitted[6], "/"):
-					pidNProgramName := strings.SplitN(splitted[6], "/", 1)
+					pidNProgramName := strings.SplitN(splitted[6], "/", 2)
 					pid = pidNProgramName[0]
 					programName = pidNProgramName[1]
 					break
