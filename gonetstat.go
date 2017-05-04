@@ -29,7 +29,7 @@ type netstat struct {
 func (n netstat) GetSpecialState() string {
 	var state string
 	if n.ProgramName == "-" && n.Pid == "-" {
-		state = "UNBOUND_CLOSE_WAIT"
+		state = "UNBOUND_" + n.State
 	} else {
 		state = n.State
 	}
