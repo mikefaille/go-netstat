@@ -15,25 +15,17 @@ import (
 	"github.com/mikefaille/yagt"
 )
 
-type netstat struct {
-	Proto          string
-	RecvQ          string
-	SendQ          string
-	LocalAddress   net.TCPAddr
-	ForeignAddress net.TCPAddr
-	State          string
-	Pid            string
-	ProgramName    string
-}
 
-func (n netstat) GetSpecialState() string {
-	var state string
-	if n.ProgramName == "-" && n.Pid == "-" {
-		state = "UNBOUND_" + n.State
-	} else {
-		state = n.State
-	}
-	return state
+type netstat struct {
+	Proto               string
+	RecvQ               string
+	SendQ               string
+	LocalAddress        net.TCPAddr
+	ForeignAddress      net.TCPAddr
+	State               string
+	Pid                 string
+	ProgramName         string
+	IsConnectionUnbound bool
 }
 
 type Status int
@@ -116,10 +108,12 @@ func GetOutputv2() ([]netstat, error) {
 				pid := ""
 				programName := ""
 
+				isConnectionUnbound := false
 				switch {
 				case splitted[6] == "-":
 					pid = "-"
 					programName = "-"
+					isConnectionUnbound = true
 					break
 				case strings.Contains(splitted[6], "/"):
 					pidNProgramName := strings.SplitN(splitted[6], "/", 2)
@@ -132,14 +126,15 @@ func GetOutputv2() ([]netstat, error) {
 				}
 
 				netstatStruct := netstat{
-					Proto:          splitted[0],
-					RecvQ:          splitted[1],
-					SendQ:          splitted[2],
-					LocalAddress:   localAddr,
-					ForeignAddress: ForeignAddr,
-					State:          splitted[5],
-					Pid:            pid,
-					ProgramName:    programName,
+					Proto:               splitted[0],
+					RecvQ:               splitted[1],
+					SendQ:               splitted[2],
+					LocalAddress:        localAddr,
+					ForeignAddress:      ForeignAddr,
+					State:               splitted[5],
+					Pid:                 pid,
+					ProgramName:         programName,
+					IsConnectionUnbound: isConnectionUnbound,
 				}
 
 				linesOutput = append(linesOutput, netstatStruct)
