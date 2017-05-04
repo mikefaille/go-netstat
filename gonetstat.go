@@ -26,6 +26,16 @@ type netstat struct {
 	ProgramName    string
 }
 
+func (n netstat) GetSpecialState() string {
+	var state string
+	if n.ProgramName == "-" && n.Pid == "-" {
+		state = "UNBOUND_CLOSE_WAIT"
+	} else {
+		state = n.State
+	}
+	return state
+}
+
 type Status int
 
 // Méthode pour représenter un enum de state de connections
