@@ -72,7 +72,7 @@ func GetOutputv2() ([]Netstat, error) {
 	cmd := exec.Command(cmdName, cmdArgs...)
 	cmdReader, err := cmd.StdoutPipe()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error creating StdoutPipe for netstat", err)
+		log.Println(os.Stderr, "Error creating StdoutPipe for netstat", err)
 		return nil, err
 	}
 
@@ -81,7 +81,7 @@ func GetOutputv2() ([]Netstat, error) {
 
 		// Skip 2 next lines
 		if !(scanner.Scan() && scanner.Scan()) {
-			log.Fatalln("netstat output is empty")
+			log.Println("netstat output is empty")
 		}
 
 		for scanner.Scan() {
