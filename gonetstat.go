@@ -113,7 +113,10 @@ func GetOutputv2() ([]Netstat, error) {
 				case splitted[6] == "-":
 					pid = "-"
 					programName = "-"
-					isConnectionUnbound = true
+
+					if os.Getenv("USER") == "root" {
+						isConnectionUnbound = true
+					}
 					break
 				case strings.Contains(splitted[6], "/"):
 					pidNProgramName := strings.SplitN(splitted[6], "/", 2)
