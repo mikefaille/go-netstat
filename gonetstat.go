@@ -60,11 +60,11 @@ var ConnStatus = [...]string{
 	UNKNOWN:     "UNKNOWN",
 }
 
-func GetOutputv2() ([]Netstat, error) {
+func GetOutputv2() ([]*Netstat, error) {
 	yagt.Enter()
 	defer yagt.Exit(time.Now())
 
-	linesOutput := make([]Netstat, 0)
+	linesOutput := make([]*Netstat, 0)
 
 	cmdName := "/bin/netstat"
 	cmdArgs := []string{"-antp"}
@@ -140,7 +140,7 @@ func GetOutputv2() ([]Netstat, error) {
 					IsConnectionUnbound: isConnectionUnbound,
 				}
 
-				linesOutput = append(linesOutput, netstatStruct)
+				linesOutput = append(linesOutput, &netstatStruct)
 			}
 
 		}
