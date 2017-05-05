@@ -16,7 +16,7 @@ import (
 )
 
 
-type netstat struct {
+type Netstat struct {
 	Proto               string
 	RecvQ               string
 	SendQ               string
@@ -60,11 +60,11 @@ var ConnStatus = [...]string{
 	UNKNOWN:     "UNKNOWN",
 }
 
-func GetOutputv2() ([]netstat, error) {
+func GetOutputv2() ([]Netstat, error) {
 	yagt.Enter()
 	defer yagt.Exit(time.Now())
 
-	linesOutput := make([]netstat, 0)
+	linesOutput := make([]Netstat, 0)
 
 	cmdName := "/bin/netstat"
 	cmdArgs := []string{"-antp"}
@@ -125,7 +125,7 @@ func GetOutputv2() ([]netstat, error) {
 					break
 				}
 
-				netstatStruct := netstat{
+				netstatStruct := Netstat{
 					Proto:               splitted[0],
 					RecvQ:               splitted[1],
 					SendQ:               splitted[2],
