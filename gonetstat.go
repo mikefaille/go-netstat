@@ -89,10 +89,9 @@ func GetOutputv2() ([]*Netstat, error) {
 			line := scanner.Text()
 
 			splitted := strings.Fields(line)
-			if len(splitted) >= 6 {
-				log.Println("gonetstat, wrong column number:  ", len(splitted))
-			} else if len(splitted) < 6 {
-				log.Println("GetOutputv2 Error: ", splitted)
+
+			if len(splitted) != 7 {
+				log.Println("gonetstat, wrong column number (not 7):  ", len(splitted))
 			} else {
 
 				localAddr, err := parseStrAddr(splitted[3])
